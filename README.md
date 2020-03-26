@@ -13,3 +13,4 @@ The application that I’m planning to create will ultimately predict a certain 
 * update credentials
 
 ## Relational Schema
+Recents/schema2020/.jpg
