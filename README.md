@@ -13,4 +13,4 @@ The application that I’m planning to create will ultimately predict a certain 
 * update credentials
 
 ## Relational Schema
-![Re-using schema from IS400] (/docs/schema2020.jpg)
+![Re-using schema from IS400] (docs/schema2020.jpg)
