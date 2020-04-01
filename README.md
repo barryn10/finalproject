@@ -14,4 +14,4 @@ The application that I'm planning on creating is focused on modeling an e-commer
 * read date purchased
 
 ## Relational Schema
-![tentative schema for project] (docs/schema2020.jpg)
+![tentative schema for project] (/Users/barrynshark/Documents/GitHub/finalproject/images/projectSchema.png)
