@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Users</h1>
+    <a href="newcustomer">Add new customer</a>
+
+    <table>
+        <tr>
+          <td>id</td>
+          <td>First name</td>
+          <td>Last name</td>
+          <td>email</td>
+        </tr>
+        {% for customer in customers %}
+        <tr>
+          <td><a href="customer?PID={{ customer.PID }}">{{ customer.PID }}</a></td>
+          <td>{{ customer.fname }} </td>
+          <td>{{ customer.lname }}</td>
+          <td>{{ customer.email }}</td>
+        </tr>
+
+
+
+    {% endfor %}
+    </table>
+{% endblock %}
