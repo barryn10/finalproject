@@ -43,6 +43,23 @@ class userList(baseObject):
             return True
         else:
             return False
+    def tryAdmin(self,email,pw):
+        sql = 'SELECT * FROM `' + self.tn + '` WHERE `email` = barryn@aol.com AND `password` = 12345;'
+        #tokens = (email,pw)
+        self.connect()
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        #print(sql)
+        #print(tokens)
+        cur.execute(sql,tokens)
+        self.data = []
+        n=0
+        for row in cur:
+            self.data.append(row)
+            n+=1
+        if n > 0:
+            return True
+        else:
+            return False
 
 
 

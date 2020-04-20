@@ -39,7 +39,7 @@ def login():
             session['user'] = u.data[0]
             session['active'] = time.time()
 
-            return redirect('main')
+            return redirect('maincustomer')
         else:
             #print('login failed')
             return render_template('login.html', title='Login', msg='Incorrect username or password.')
@@ -55,18 +55,18 @@ def login():
 def logincustomer():
     if request.form.get('email') is not None and request.form.get('password') is not None:
         u = userList()
-        if c.tryLogin(request.form.get('email'),request.form.get('password')):
+        if u.tryLogin(request.form.get('email'),request.form.get('password')):
             #print('login ok')
-            session['user'] = c.data[0]
+            session['user'] = u.data[0]
             session['active'] = time.time()
 
             return redirect('main')
         else:
             #print('login failed')
-            return render_template('login.html', title='Login', msg='Incorrect username or password.')
+            return render_template('logincustomer.html', title='Login', msg='Incorrect login.')
     else:
         if 'msg' not in session.keys() or session['msg'] is None:
-            m = 'Type your email and password to continue.'
+            m = 'Please enter email and password to continue.'
         else:
             m = session['msg']
             session['msg'] = None
@@ -76,15 +76,15 @@ def logincustomer():
 def loginadmin():
     if request.form.get('email') is not None and request.form.get('password') is not None:
         u = userList()
-        if c.tryLogin(request.form.get('email'),request.form.get('password')):
+        if u.tryAdmin(request.form.get('email'),request.form.get('password')):
             #print('login ok')
-            session['user'] = c.data[0]
+            session['user'] = u.data[0]
             session['active'] = time.time()
 
             return redirect('main')
         else:
             #print('login failed')
-            return render_template('loginadmin.html', title='Login', msg='Incorrect username or password.')
+            return render_template('loginadmin.html', title='Login', msg='Incorrect credentials.')
     else:
         if 'msg' not in session.keys() or session['msg'] is None:
             m = 'Type your email and password to continue.'
@@ -200,7 +200,7 @@ def brandnewuser():
         u.add()
         if u.verifyNew():
             u.insert()
-            print(u.data)
+            #print(u.data)
             return render_template('savedcustomer.html', title='User Saved',user=u.data[0])
         else:
             return render_template('brandnewuser.html', title='User Not Saved',user=u.data[0],msg=u.errorList)
@@ -226,9 +226,16 @@ def savecustomer():
 @app.route('/main')
 def main():
     if checkSession() == False: #check to make sure the user is logged in
-        return redirect('login')
-    userinfo = 'Hello, ' + session['user']['First']
+        return redirect('loginadmin')
+    userinfo = 'Hello, ' + session['user']['First'] + ' ' +session['user']['Last']
     return render_template('main.html', title='Main menu',msg = userinfo)
+
+@app.route('/maincustomer')
+def maincustomer():
+    if checkSession() == False: #check to make sure the user is logged in
+        return redirect('login')
+    userinfo = 'Hello, ' + session['user']['First'] + ' ' +session['user']['Last']
+    return render_template('maincustomer.html', title='Main menu',msg = userinfo)
 
 def checkSession():
     if 'active' in session.keys():
