@@ -1,5 +1,4 @@
 import pymysql
-
 class baseObject:
 
     def setupObject(self,tn):

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+      <h1>Products</h1>
+       <a href="newproduct">Add new product</a>
+
+        <table>
+            <tr>
+              <td>ID</td>
+              <td>Product Name</td>
+              <td>Size</td>
+              <td>Shoe Height</td>
+            </tr>
+            {% for product in products %}
+            <tr>
+              <td><a href="product?productID={{ product.productID }}">{{ product.productID }}</a></td>
+              <td>{{ product.productName }} </td>
+              <td>{{ product.productSize }}</td>
+              <td>{{ product.productShoeHeight }}</td>
+            </tr>
+
+
+
+        {% endfor %}
+        </table>
+    <br><br><a href="/main">Return to Main Menu</a><br><br>
+
+
+
+{% endblock %}

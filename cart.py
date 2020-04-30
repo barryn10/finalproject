@@ -1,20 +1,14 @@
 import pymysql
 from baseObject import baseObject
-class productList(baseObject):
+class cartList(baseObject):
     def __init__(self):
-        self.setupObject('sharkbd_products')
+        self.setupObject('sharkbd_cart')
 
     def verifyNew(self,n=0):
         self.errorList = []
 
-        if len(self.data[n]['productName']) < 10:
-            self.errorList.append("Name of product must be at least 10 characters long.")
-
-        if len(self.data[n]['productSize']) == 0:
-            self.errorList.append("Product Size cannot be blank.")
-
-        if (self.data[n]['productShoeHeight']) == 0:
-            self.errorList.append("Shoe Height must be entered as low, mid, or high.")
+        if len(self.data[n]['Quantity']) < 1 or > 5:
+            self.errorList.append("Quantity must be at least 1 and no greater than 5.")
 
         if len(self.errorList) > 0:
             return False

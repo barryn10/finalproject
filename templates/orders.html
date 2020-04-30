@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+      <h1>Orders</h1>
+       <a href="neworder">Create an order</a>
+
+        <table>
+            <tr>
+              <td>Order ID</td>
+              <td>Product Name</td>
+              <td>Product Size</td>
+              <td>Customer</td>
+              <td>Address</td>
+              <td>Card Type</td>
+              <td>Order Status</td>
+
+            </tr>
+            {% for order in orders %}
+            <tr>
+              <td><a href="order?orderID={{ order.orderID }}">{{ order.orderID }}</a></td>
+              <td>{{ order.productName }} </td>
+              <td>{{ order.productSize }} </td>
+              <td>{{ order.Customer }} </td>
+              <td>{{ order.Address }} </td>
+              <td>{{ order.cardType }}</td>
+              <td>{{ order.orderStatus }} </td>
+            </tr>
+
+
+
+        {% endfor %}
+        </table>
+    <br><br><a href="/main">Return to Main Menu</a><br><br>
+
+
+
+{% endblock %}

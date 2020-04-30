@@ -19,9 +19,6 @@ class userList(baseObject):
         if len(self.data[n]['Password']) == 0:
             self.errorList.append("Email cannot be blank.")
 
-        if len(self.data[n]['Type']) == 0:
-            self.errorList.append("User must specify whether they are an admin or customer.")
-
         if len(self.errorList) > 0:
             return False
         else:
@@ -60,6 +57,27 @@ class userList(baseObject):
             return True
         else:
             return False
+
+    def getAll(self,order = None):
+        sql = 'SELECT * FROM `' + self.tn + '` '
+        if order != None:
+            sql += 'ORDER BY `'+order+'`'
+        self.connect()
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        #print(sql)
+        #print(tokens)
+        cur.execute(sql)
+        self.data = []
+        for row in cur:
+            self.data.append(row)
+            
+    def deleteByID(self,id):
+        sql = 'DELETE FROM`' + self.tn + '` WHERE `'+self.pk+'` = %s;'
+        tokens = (id)
+        self.connect()
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        cur.execute(sql,tokens)
+
 
 
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Product</h1>
+    <form action="/saveproduct" method="POST">
+        Product Name: <br>
+        <input type="text" name="productName" value="{{ product.productName }}" /><br><br>
+
+        Product Size: <br>
+        <input type="text" name="productSize" value="{{ product.productSize }}" /><br><br>
+
+        Product Height: <br>
+        <input type="text" name="productShoeHeight" value="{{ product.productShoeHeight }}"/><br><br>
+
+        <input type="hidden" name="productID" value="{{ product.productID }}"/> <br>
+
+        <input type="submit" value="Save Product"><br>
+    </form>
+    <form action="/deleteproduct" method="POST">
+      <input type="submit" value="Delete this product" />
+      <input type="hidden" name="productID" value="{{ product.productID }}" /><br>
+    </form>
+
+    <form action="/createOrder" method="POST">
+      <input type="submit" value="Create an order with this product" />
+      <input type="hidden" name="productID" value="{{ product.productID }}" />
+    </form>
+
+    <a href="products">Return to Products List</a>
+
+
+
+{% endblock %}

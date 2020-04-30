@@ -2,25 +2,28 @@
 
 {% block content %}
     <h1>Users</h1>
-    <a href="newcustomer">Add new customer</a>
+    <a href="newcustomer">Add new user</a>
 
     <table>
         <tr>
-          <td>id</td>
+          <td>ID</td>
           <td>First name</td>
           <td>Last name</td>
-          <td>email</td>
+          <td>Email</td>
+          <td>Type</td>
         </tr>
-        {% for customer in customers %}
+        {% for user in users %}
         <tr>
-          <td><a href="customer?PID={{ customer.PID }}">{{ customer.PID }}</a></td>
-          <td>{{ customer.fname }} </td>
-          <td>{{ customer.lname }}</td>
-          <td>{{ customer.email }}</td>
+          <td><a href="user?userID={{ user.userID }}">{{ user.userID }}</a></td>
+          <td>{{ user.First }} </td>
+          <td>{{ user.Last }}</td>
+          <td>{{ user.Email }}</td>
+          <td>{{ user.Type }}</td>
         </tr>
 
 
 
     {% endfor %}
     </table>
+    <br><br><br><br><a href="/main">Return to Main Menu</a><br><br>
 {% endblock %}

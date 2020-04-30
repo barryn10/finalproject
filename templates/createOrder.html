@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Creating an Order</h1>
+    <form action="/saveorder" method="POST">
+        Product Name: <br>
+        <input type="text" name="productName" value="{{ order.productName }}" /><br><br>
+
+        Product Size:<br>
+        <input type="text" name="productSize" value="{{ order.productSize}}"/><br><br>
+
+        Customer:<br>
+        <input type="text" name="Customer" value="{{ order.Customer}}" /><br><br>
+
+        Address: <br>
+        <input type="text" name="Address" value="{{ order.Address}}" /><br><br>
+
+        Card Type (debit or credit): <br>
+        <input type="text" name="cardType" /><br><br>
+
+        <input type="submit" value="Create this order"><br><br>
+    </form>
+{% endblock %}
