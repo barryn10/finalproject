@@ -1,20 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Product</h1>
-    <form action="/savecart" method="POST">
-        Product Name: <br>
-        <input type="text" name="productName" value="{{ product.productName }}" /><br><br>
+      <h1>Here's what you've put in your cart so far!</h1>
 
-        Product Size: <br>
-        <input type="text" name="productSize" value="{{ product.productSize }}" /><br><br>
+        <table>
+            <tr>
+              <td>Cart ID</td>
+              <td>Product ID</td>
+              <td>Order Status</td>
+            </tr>
+            {% for cart in carts %}
 
-        Product Height: <br>
-        <input type="text" name="productShoeHeight" value="{{ product.productShoeHeight }}"/><br><br>
+            <tr>
+              <td><a href="cart?cartID={{ cart.cartID }}">{{ cart.cartID }}</td>
+              <td>{{ cart.productID }} </td>
+              <td>{{ cart.orderStatus }} </td>
 
-        <input type="hidden" name="productID" value="{{ product.productID }}"/> <br>
+            </tr>
 
-        <input type="submit" value="Add to cart"><br><br>
-        <td><a href="thesneakerstore">Return to sneaker list.</a></td><br>
-    </form>
+
+
+        {% endfor %}
+        </table>
+    <br><br><a href="/main">Return to Main Menu</a><br><br>
+
+
+
 {% endblock %}

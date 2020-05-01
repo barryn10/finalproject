@@ -1,13 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Main menu</h1>
-    {% if msg %}
-      <div id="">
-        {{ msg }}
-      </div>
-    {% endif %}
-    <br>
+      <h1>Products</h1>
 
         <table>
             <tr>
@@ -18,18 +12,17 @@
             </tr>
             {% for product in products %}
             <tr>
-              <td><a href="storecart?productID={{ product.productID }}">{{ product.productID }}</a></td>
+              <td>{{ product.productID }}</td>
               <td>{{ product.productName }} </td>
               <td>{{ product.productSize }}</td>
-              <td>{{ product.productShoeHeight }}</td><br>
+              <td>{{ product.productShoeHeight }}</td>
             </tr>
 
 
 
         {% endfor %}
         </table>
-
-    <br><br><br><br><a href="/main">Return to Main Menu</a><br><br>
+    <br><br><a href="/main">Return to Main Menu</a><br><br>
 
 
 

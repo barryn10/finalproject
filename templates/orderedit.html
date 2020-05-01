@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Order</h1>
+    <form action="/saveorder" method="POST">
+        Product ID: <br>
+        <input type="text" name="productID" value="{{ order.productID }}"/><br><br>
+
+        Customer: <br>
+        <input type="text" name="Customer" value="{{ order.Customer }}"/><br><br>
+
+        Address: <br>
+        <input type="text" name="Address" value="{{ order.Address }}"/><br><br>
+
+        Card Type: <br>
+        <input type="text" name="cardType" value="{{ order.cardType }}"/><br><br>
+
+        <input type="hidden" name="orderID" value="{{ order.orderID }}"/> <br>
+
+        <input type="submit" value="Save Order"><br>
+    </form>
+    <form action="/deleteorder" method="POST">
+      <input type="submit" value="Delete this order" />
+      <input type="hidden" name="orderID" value="{{ order.orderID }}" /><br>
+    </form>
+
+
+    <a href="orders">Return to Orders List</a>
+
+
+
+{% endblock %}

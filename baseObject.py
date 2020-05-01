@@ -134,6 +134,27 @@ class baseObject:
         for row in cur:
             self.data.append(row)
 
+    def getByCustomer(self,id):
+        '''
+        SELECT * FROM `conlontj_products`
+        LEFT JOIN `conlontj_products` ON `conlontj_products`.`productID` = `conlontj_orders`.`orderID`
+        WHERE  `conlontj_attends`.`customer_id` = 3
+
+        '''
+        sql = '''SELECT * FROM `sharkbd_orders`
+        LEFT JOIN `sharkbd_products` ON `sharkbd_products`.`productID` = `sharkbd_orders`.`productID`
+        WHERE  `sharkbd_orders`.`productID` = %s'''
+        tokens = (id)
+        self.connect()
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        #print(sql)
+        #print('tokens:',str(tokens))
+        self.log(sql,tokens)
+        cur.execute(sql,tokens)
+        self.data = []
+        for row in cur:
+            self.data.append(row)
+
 
     #Add unit tests
     #Add if statements for validation of other fields

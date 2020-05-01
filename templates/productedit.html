@@ -21,7 +21,7 @@
       <input type="hidden" name="productID" value="{{ product.productID }}" /><br>
     </form>
 
-    <form action="/createOrder" method="POST">
+    <form action="/createOrderByProduct" method="POST">
       <input type="submit" value="Create an order with this product" />
       <input type="hidden" name="productID" value="{{ product.productID }}" />
     </form>

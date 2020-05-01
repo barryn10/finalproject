@@ -3,12 +3,11 @@
 {% block content %}
     <h1>Creating an Order</h1>
     <form action="/saveorder" method="POST">
-      Choose product for purchase:<br>
-      <select name="productID">
-				{% for product in pl %}
-					<option value="{{ product.productID }}">{{ product.productName }} ({{ product.productSize}}) ({{product.productID}})</option>
-				{% endfor %}
-			</select><br><br>
+        Product Name:<br>
+        <input type="text" name="productName" value="{{product.productName}}" /><br><br>
+
+        Product Size:<br>
+        <input type="text" name="productSize" value="{{ product.productSize}}" /><br><br>
 
         Customer:<br>
         <input type="text" name="Customer" value="{{ order.Customer}}" /><br><br>
@@ -17,7 +16,7 @@
         <input type="text" name="Address" value="{{ order.Address}}" /><br><br>
 
         Card Type (debit or credit): <br>
-        <input type="text" name="cardType" /><br><br>
+        <input type="text" name="cardType" value="{{ order.cardType}}" /><br><br>
 
         <input type="submit" value="Create this order"><br><br>
     </form>

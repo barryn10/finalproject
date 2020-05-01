@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Placing an item in your cart</h1>
+    <form action="/savecart" method="POST">
+      Choose product to place in cart:<br>
+      <select name="productID">
+				{% for product in pl %}
+					<option value="{{ product.productID }}">{{ product.productName }} ({{ product.productSize}})</option>
+				{% endfor %}
+			</select><br><br>
+
+        <input type="submit" value="Add to cart"><br><br>
+    </form>
+{% endblock %}

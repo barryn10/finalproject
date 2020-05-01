@@ -4,6 +4,7 @@ from flask import request,session, redirect, url_for, escape,send_from_directory
 from user import userList
 from product import productList
 from orders import orderList
+from cart import cartList
 import pymysql
 import json
 import time
@@ -29,6 +30,9 @@ def get():
 def thesneakerstore():
     if checkSession() == False: #check to make sure the user is logged in
         return redirect('login')
+    allProducts = productList()
+    allProducts.getAll()
+    u = userList()
     p = productList()
     p.getAll()
 
@@ -36,29 +40,59 @@ def thesneakerstore():
     print(p.data)
 
 
-    return render_template('customerproducts.html', title='Check out our shoe selection!',products=p.data)
+    return render_template('purchase.html', title='Check out our shoe selection!',products=p.data,user=u.data,pl=allProducts.data)
 
-@app.route('/storecart')
+@app.route('/storecart', methods = ['GET','POST'])
 def storecart():
     if checkSession() == False: #check to make sure the user is logged in
         return redirect('login')
-    p = productList()
-    if request.args.get(p.pk) is None:
-        return render_template('error.html', msg='No product id given.')
+    allProducts = productList()
+    allProducts.getAll()
+    if request.form.get('cart') is None:
+        p = productList()
+        c = cartList()
+    #if request.args.get(p.pk) is None:
+        #return render_template('error.html', msg='No product id given.')
+        c.set('cartID','')
+        c.set('productID','')
+        c.add()
+        c.getAll()
+        return render_template('storecart.html', title='Here is your cart contents!',product=p.data,carts=c.data,pl=allProducts.data)
+    else:
+        #p.getById(request.args.get(p.pk))
+        #if len(p.data) <= 0:
+            #return render_template('error.html', msg='Product not found.')
+        c = cartList()
+        c.set('cartID',request.form.get('cartID'))
+        c.set('productID',request.form.get('productID'))
+        #p.set('productShoeHeight',request.form.get('productShoeHeight'))
+        c.add()
+        if c.verifyNew():
+            c.insert()
+            c.getAll()
+            print(c.data)
+            return render_template('storecart.html', title='Here is your cart contents!',product=p.data,carts=c.data)
+        else:
+            return render_template('purchase.html', title='Here is your cart contents!',product=p.data,carts=c.data)
 
+@app.route('/cart')
+def cart():
+    if checkSession() == False: #check to make sure the user is logged in
+        return redirect('login')
+    #sneakerwelcome = 'Hello, ' + session['user']['First'] + ' ' + 'I hope you are ready to shop today. Welcome to our store!'
+    c = cartList()
+    if request.args.get(c.pk) is None:
+        return render_template('error.html', msg='No id given.')
 
-    p.getById(request.args.get(p.pk))
-    if len(p.data) <= 0:
+    c.getById(request.args.get(c.pk))
+    if len(c.data) <= 0:
         return render_template('error.html', msg='Product not found.')
-    p.set('productID',request.form.get('productID'))
-    p.set('productName',request.form.get('productID'))
-    p.set('productSize',request.form.get('productSize'))
-    p.set('productShoeHeight',request.form.get('productShoeHeight'))
-    p.add()
-    p.insert()
 
+    c.update()
+    print(c.data)
 
-    return render_template('productsToCart.html', title='Check out our shoe selection!',product=p.data[0])
+    #print(c.data)
+    return render_template('cartedit.html', title='Orders',msg ='',cart=c.data[0])
 
 @app.route('/login', methods = ['GET','POST'])
 def login():
@@ -226,33 +260,38 @@ def newcustomer():
 
 @app.route('/neworder',methods = ['GET', 'POST'])
 def neworder():
-    if checkSession() == False:
-        return redirect ('login')
-    if request.form.get('productName') is None:
-        o = orderList()
-        o.set('First','')
-        o.set('Last','')
-        o.set('Email','')
-        o.set('Password','')
-        o.set('Type','')
-        o.add()
-        return render_template('createOrder.html', title='New Order',order=o.data[0])
-    else:
-        o = orderList()
-        o.set('productName',request.form.get('productName'))
-        o.set('productSize',request.form.get('productSize'))
-        o.set('Customer',request.form.get('Customer'))
-        o.set('Address',request.form.get('Address'))
-        o.set('cardType',request.form.get('cardType'))
-        o.add()
-        if o.verifyNew():
-            o.insert()
-            print(o.data)
-            return render_template('savedorder.html', title='Order Saved',order=o.data[0])
+        if checkSession() == False:
+            return redirect ('login')
+        allProducts = productList()
+        allProducts.getAll()
+        if request.form.get('order') is None:
+            p = productList()
+            o = orderList()
+            o.set('userID','')
+            o.set('productID','')
+            o.set('productName','')
+            o.set('productSize','')
+            o.set('Customer','')
+            o.set('Address','')
+            o.set('cardType','')
+            o.add()
+            return render_template('createOrder.html', title='New Order',order=o.data[0],pl=allProducts.data,product=p.data)
         else:
-            return render_template('createOrder.html', title='Order Not Saved',order=o.data[0],msg=u.errorList)
-
-
+            o = orderList()
+            o.set('userID',session['user']['userID'])
+            o.set('productID',request.form.get('productID'))
+            o.set('productName',request.form.get('productName'))
+            o.set('productSize',request.form.get('productSize'))
+            o.set('Customer',request.form.get('Customer'))
+            o.set('Address',request.form.get('Address'))
+            o.set('cardType',request.form.get('cardType'))
+            o.add()
+            if o.verifyNew():
+                o.insert()
+                print(o.data)
+                return render_template('savedorder.html', title='Order Saved',order=o.data[0])
+            else:
+                return render_template('createOrder.html', title='Order Not Saved',order=o.data[0],msg=u.errorList)
 @app.route('/brandnewuser',methods = ['GET', 'POST'])
 def brandnewuser():
     if request.form.get('First') is None:
@@ -293,7 +332,7 @@ def savecustomer():
     u.set('Type',request.form.get('Type'))
     u.add()
     u.update()
-    u.insert()
+    #u.insert()
     print(u.data)
         #return ''
     return render_template('savedcustomer.html', title='Customer Saved',user=u.data[0])
@@ -320,15 +359,16 @@ def savecart():
     if checkSession() == False:
         return redirect('login')
     p = productList()
-    p.set('productID',request.form.get('productID'))
-    p.set('productName',request.form.get('productID'))
-    p.set('productSize',request.form.get('productSize'))
-    p.set('productShoeHeight',request.form.get('productShoeHeight'))
-    p.set('Quantity',request.form.get('Quantity'))
-    p.insertToCart()
-    print(p.data)
+    c = cartList()
+    c.set('cartID',request.form.get('cartID'))
+    c.set('productID',request.form.get('productID'))
+    c.add()
+    c.insert()
+    print('aaaaaaaaaaaaaa')
+    print(c.data)
+    c.getAll()
         #return ''
-    return render_template('storecart.html', title='Adding a shoe to your cart?',products=p.data)
+    return render_template('savedcart.html', title='Shoe added to your cart.',products=p.data,cart=c.data)
 
 
 @app.route('/main')
@@ -358,6 +398,16 @@ def products():
     print(p.data)
     return render_template('products.html', title='Sneakers',msg ='',products=p.data)
 
+@app.route('/viewproducts')
+def viewproducts():
+    if checkSession() == False: #check to make sure the user is logged in
+        return redirect('login')
+    #sneakerwelcome = 'Hello, ' + session['user']['First'] + ' ' + 'I hope you are ready to shop today. Welcome to our store!'
+    p = productList()
+    p.getAll()
+    print(p.data)
+    return render_template('viewproducts.html', title='Sneakers',msg ='',products=p.data)
+
 @app.route('/orders')
 def orders():
     if checkSession() == False: #check to make sure the user is logged in
@@ -368,28 +418,40 @@ def orders():
     print(o.data)
     return render_template('orders.html', title='Orders',msg ='',orders=o.data)
 
+@app.route('/myorders')
+def myorders():
+    if checkSession() == False: #check to make sure the user is logged in
+        return redirect('login')
+    #sneakerwelcome = 'Hello, ' + session['user']['First'] + ' ' + 'I hope you are ready to shop today. Welcome to our store!'
+    o = orderList()
+    o.getAll()
+    print(o.data)
+    return render_template('myorders.html', title='Orders',msg ='',orders=o.data)
+
 @app.route('/createOrder',methods = ['GET', 'POST'])
 def createOrder():
     if checkSession() == False: #check to make sure the user is logged in
         return redirect('login')
+    allProducts = productList()
+    allProducts.getAll()
     u = userList()
     o = orderList()
     p = productList()
     if request.form.get('productID') is None:
         o = orderList()
         o.set('productID','')
-        o.set('productName','')
-        o.set('productSize','')
+        #o.set('productName','')
+        #o.set('productSize','')
         o.set('Customer','')
         o.set('Address','')
         o.set('cardType','')
         o.add()
-        return render_template('createOrder.html', title='New Order',order=o.data[0])
+        return render_template('createOrder.html', title='New Order',order=o.data[0],product=p.data[0])
     else:
         o = orderList()
         o.set('productID',request.form.get('productID'))
-        o.set('productName',request.form.get('productName'))
-        o.set('productSize',request.form.get('productSize'))
+        #o.set('productName',request.form.get('productName'))
+        #o.set('productSize',request.form.get('productSize'))
         o.set('Customer',request.form.get('Customer'))
         o.set('Address',request.form.get('Address'))
         o.set('cardType',request.form.get('cardType'))
@@ -418,13 +480,68 @@ def createOrder():
 
     return render_template('createOrder.html', title='Creating an order...',msg ='',order=o.data,product=p.data,user=u.data)
 
+@app.route('/createOrderByProduct',methods = ['GET', 'POST'])
+def createOrderByProduct():
+    if checkSession() == False: #check to make sure the user is logged in
+        return redirect('login')
+    allProducts = productList()
+    allProducts.getAll()
+    u = userList()
+    o = orderList()
+    p = productList()
+    if request.form.get('productID') is None:
+        o = orderList()
+        #o.set('productID','')
+        o.set('productName','')
+        o.set('productSize','')
+        o.set('Customer','')
+        o.set('Address','')
+        o.set('cardType','')
+        o.add()
+        return render_template('createOrderByProduct.html', title='New Order',order=o.data[0],product=p.data[0])
+    else:
+        o = orderList()
+        #o.set('productID',request.form.get('productID'))
+        o.set('productName',request.form.get('productName'))
+        o.set('productSize',request.form.get('productSize'))
+        o.set('Customer',request.form.get('Customer'))
+        o.set('Address',request.form.get('Address'))
+        o.set('cardType',request.form.get('cardType'))
+
+        o.add()
+        #if o.verifyNew():
+            #o.insert()
+            #print(o.data)
+            #return render_template('savedorder.html', title='Order Saved',order=o.data[0])
+        #else:
+            #return render_template('createOrder.html', title='Order Not Saved',order=o.data[0],msg=u.errorList)
+
+    '''if request.args.get(p.pk) is None:
+        return render_template('error.html', msg='No customer id given.')
+
+
+    p.getById(request.args.get(p.pk))
+    if len(p.data) <= 0:
+        return render_template('error.html', msg='Customer not found.')
+
+
+    p.update()
+    print(p.data)
+'''
+    #sneakerwelcome = 'Hello, ' + session['user']['First'] + ' ' + 'I hope you are ready to shop today. Welcome to our store!'
+
+    return render_template('createOrderByProduct.html', title='Creating an order...',msg ='',order=o.data,product=p.data,user=u.data)
+
+
 @app.route('/saveorder',methods = ['GET', 'POST'])
 def saveorder():
     if checkSession() == False:
         return redirect('login')
     o = orderList()
-    o.set('productName',request.form.get('productName'))
-    o.set('productSize',request.form.get('productSize'))
+    o.set('orderID',request.form.get('orderID'))
+    o.set('productID',request.form.get('productID'))
+    #o.set('productName',request.form.get('productName'))
+    #o.set('productSize',request.form.get('productSize'))
     o.set('Customer',request.form.get('Customer'))
     o.set('Address',request.form.get('Address'))
     o.set('cardType',request.form.get('cardType'))
@@ -436,6 +553,22 @@ def saveorder():
         #return ''
     return render_template('savedorder.html', title='Order Saved',order=o.data[0])
 
+@app.route('/order')
+def order():
+    if checkSession() == False:
+        return redirect('login')
+    o = orderList()
+    if request.args.get(o.pk) is None:
+        return render_template('error.html', msg='No product id given.')
+
+    o.getById(request.args.get(o.pk))
+    if len(o.data) <= 0:
+        return render_template('error.html', msg='Product not found.')
+
+    #o.update()
+    print(o.data)
+
+    return render_template('orderedit.html', title='Order ',order=o.data[0])
 
 
 def checkSession():
@@ -489,7 +622,41 @@ def deleteproduct():
     #return ''
     p = productList()
     p.deleteByID(request.form.get('productID'))
-    return render_template('confirmaction.html', title='Product Deleted',  msg='Customer deleted.')
+    return render_template('confirmaction.html', title='Product Deleted',  msg='Product deleted.')
+
+    '''
+    <form action="/deletecustomer" method="POST">
+			<input type="submit" value="Delete this customer" />
+			<input type="hidden" name="id" value="{{ customer.id }}" />
+		</form>
+    '''
+
+@app.route('/deleteorder',methods = ['GET', 'POST'])
+def deleteorder():
+    if checkSession() == False:
+        return redirect('login')
+    print("orderID:",request.form.get('orderID'))
+    #return ''
+    o = orderList()
+    o.deleteByID(request.form.get('orderID'))
+    return render_template('confirmaction.html', title='Order Deleted',  msg='Order deleted.')
+
+    '''
+    <form action="/deletecustomer" method="POST">
+			<input type="submit" value="Delete this customer" />
+			<input type="hidden" name="id" value="{{ customer.id }}" />
+		</form>
+    '''
+
+@app.route('/deletecart',methods = ['GET', 'POST'])
+def deletecart():
+    if checkSession() == False:
+        return redirect('login')
+    print("cartID:",request.form.get('cartID'))
+    #return ''
+    c = cartList()
+    c.deleteByID(request.form.get('cartID'))
+    return render_template('confirmaction.html', title='Cart entry Deleted',  msg='Cart entry deleted.')
 
     '''
     <form action="/deletecustomer" method="POST">

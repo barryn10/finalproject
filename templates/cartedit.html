@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Cart Entry</h1>
+        Cart ID:<br>
+        <input type="text" name="cartID" value="{{ cart.cartID }}"/><br>
+
+        Product ID: <br>
+        <input type="text" name="productID" value="{{ cart.productID }}"/><br><br>
+
+    <form action="/deletecart" method="POST">
+      <input type="submit" value="Delete this cart entry" />
+      <input type="hidden" name="cartID" value="{{ cart.cartID }}" /><br>
+    </form>
+    <form action="/neworder" method="POST">
+      <input type="submit" value="Order this cart entry" />
+      <input type="hidden" name="cartID" value="{{ cart.cartID }}" /><br>
+    </form>
+
+
+    <a href="main">Return to Main Menu</a>
+
+
+
+{% endblock %}
