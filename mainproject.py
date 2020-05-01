@@ -32,15 +32,18 @@ def thesneakerstore():
         return redirect('login')
     allProducts = productList()
     allProducts.getAll()
+
     u = userList()
     p = productList()
+    c = cartList()
+    c.set('userID',session['user']['userID'])
     p.getAll()
 
 
     print(p.data)
 
 
-    return render_template('purchase.html', title='Check out our shoe selection!',products=p.data,user=u.data,pl=allProducts.data)
+    return render_template('purchase.html', title='Check out our shoe selection!',products=p.data,user=u.data,pl=allProducts.data,cart=c.data)
 
 @app.route('/storecart', methods = ['GET','POST'])
 def storecart():
@@ -55,6 +58,7 @@ def storecart():
         #return render_template('error.html', msg='No product id given.')
         c.set('cartID','')
         c.set('productID','')
+        c.set('userID','')
         c.add()
         c.getAll()
         return render_template('storecart.html', title='Here is your cart contents!',product=p.data,carts=c.data,pl=allProducts.data)
@@ -65,6 +69,7 @@ def storecart():
         c = cartList()
         c.set('cartID',request.form.get('cartID'))
         c.set('productID',request.form.get('productID'))
+        c.set('userID',request.form.get(session['user']['userID']))
         #p.set('productShoeHeight',request.form.get('productShoeHeight'))
         c.add()
         if c.verifyNew():
@@ -362,6 +367,7 @@ def savecart():
     c = cartList()
     c.set('cartID',request.form.get('cartID'))
     c.set('productID',request.form.get('productID'))
+    c.set('userID',request.form.get(session['user']['userID']))
     c.add()
     c.insert()
     print('aaaaaaaaaaaaaa')
@@ -545,9 +551,10 @@ def saveorder():
     o.set('Customer',request.form.get('Customer'))
     o.set('Address',request.form.get('Address'))
     o.set('cardType',request.form.get('cardType'))
+    o.set('orderStatus',request.form.get('orderStatus'))
     o.add()
-    #o.update()
-    o.insert()
+    o.update()
+    #o.insert()
     #p.insert()
     print(o.data)
         #return ''

@@ -14,8 +14,8 @@ The application that I'm planning on creating is focused on modeling an e-commer
 * read date purchased
 
 ## Relational Schema
-![tentative schema for project] (/images/projectSchema.png)
+![tentative schema for project] (documents/Github/finalproject/images/projectSchema.png)
 
 ## Log in for different Users
 * Admin: barryn@aol.com | 12345
-* Customer: jdoe12@aol.com | 1234 
+* Customer: jdoe12@aol.com | 1234

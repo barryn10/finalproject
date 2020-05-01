@@ -7,6 +7,7 @@
             <tr>
               <td>Cart ID</td>
               <td>Product ID</td>
+              <td>User ID</td>
               <td>Order Status</td>
             </tr>
             {% for cart in carts %}
@@ -14,6 +15,7 @@
             <tr>
               <td><a href="cart?cartID={{ cart.cartID }}">{{ cart.cartID }}</td>
               <td>{{ cart.productID }} </td>
+              <td>{{ cart.userID }} </td>
               <td>{{ cart.orderStatus }} </td>
 
             </tr>

@@ -85,3 +85,14 @@ class orderList(baseObject):
             self.data[n][fn] = val
         else:
             print('could not set value at row ' + str(n) + ' col ' + str(fn) )
+    def getByField(self,field,value):
+        sql = 'SELECT * FROM `' + self.tn + '` WHERE `'+field+'` = %s;'
+        tokens = (value)
+        self.connect()
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        #print(sql)
+        #print(tokens)
+        cur.execute(sql,tokens)
+        self.data = []
+        for row in cur:
+            self.data.append(row)
